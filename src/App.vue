@@ -1,28 +1,41 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
-  </div>
+    <main id="app">
+        <ToolConfigProvider v-slot="{ config }">
+            <div>
+                <ToolFormNode v-model="result" :config="config" />
+                <button @click="reset">Reset</button>
+                <pre>{{ result }}</pre>
+            </div>
+        </ToolConfigProvider>
+    </main>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
+import ToolConfigProvider from "@/components/ToolConfigProvider";
+import ToolFormNode from "@/components/ToolFormNode";
+
+const result = {
+    inputs: {
+        foo: "abc",
+        bar: 123,
+    },
+    children: [{ blech: false, hooba: 222323 }],
+};
 
 export default {
-  name: "App",
-  components: {
-    HelloWorld,
-  },
+    components: {
+        ToolConfigProvider,
+        ToolFormNode,
+    },
+    data() {
+        return {
+            result,
+        };
+    },
+    methods: {
+        reset() {
+            this.result = {};
+        },
+    },
 };
 </script>
-
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
