@@ -11,30 +11,24 @@
 </template>
 
 <script>
-import ToolConfigProvider from "@/components/ToolConfigProvider";
-import ToolFormNode from "@/components/ToolFormNode";
-
-const result = {
-    inputs: {
-        foo: "abc",
-        bar: 123,
-    },
-    children: [{ blech: false, hooba: 222323 }],
-};
+import Vue from "vue";
+import ToolConfigProvider from "./components/ToolConfigProvider";
+import ToolFormNode from "./components/ToolFormNode";
 
 export default {
+    name: "App",
     components: {
         ToolConfigProvider,
         ToolFormNode,
     },
     data() {
         return {
-            result,
+            result: {},
         };
     },
     methods: {
         reset() {
-            this.result = {};
+            this.result = Vue.observable({});
         },
     },
 };

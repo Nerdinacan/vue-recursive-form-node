@@ -11,7 +11,7 @@ export default {
     computed: {
         localValue: {
             get() {
-                return this.value || this.config.default || null;
+                return this.value || this.config.defaultVal || null;
             },
             set(val) {
                 this.$emit("input", val);

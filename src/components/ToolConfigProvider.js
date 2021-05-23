@@ -1,4 +1,4 @@
-import config from "../testdata/testToolConfig";
+import config from "./config";
 
 export default {
     render() {

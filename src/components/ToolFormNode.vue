@@ -2,41 +2,38 @@
     <section class="node">
         <h4>{{ config.label }}</h4>
 
-        <div v-for="input in config.inputs" :key="input.key">
+        <div v-for="inputConfig in config.inputs" :key="inputConfig.key">
             <component
-                v-model="localValue.inputs[input.name]"
-                :config="input"
-                :is="getComponentDef(input)"
+                :is="getComponentDef(inputConfig)"
+                :config="inputConfig"
+                :value="inputs[inputConfig.name]"
+                @input="(val) => updateInputField(inputConfig, val)"
             />
         </div>
 
-        <ToolFormNode
-            v-for="(child, i) in config.children"
+        <!-- <ToolFormNode
+            v-for="child in config.children"
             :key="child.key"
             :config="child"
-            :value="localValue.children[i]"
-            @input="(val) => updateChild(i, val)"
-        />
+            :value="children[i]"
+            @input="(val) => updateChild(child, val)"
+        /> -->
     </section>
 </template>
 
 <script>
+import Vue from "vue";
 import deepmerge from "deepmerge";
-import { FormNode } from "../model";
 import TextInput from "./custom/TextInput";
+import { FormNode } from "./model";
 
-const overwriteArray = (destinationArray, sourceArray) => {
-    return sourceArray;
-};
+// Array merge favors incoming arr
+const opts = { arrayMerge: (target, source) => source };
+const merge = (target, source) => deepmerge(target, source, opts);
 
-const merge = (target, source) => {
-    const opts = {
-        arrayMerge: overwriteArray,
-    };
-    const result = deepmerge(target, source, opts);
-    debugger;
-    return result;
-};
+// utils
+const clone = (obj) => JSON.parse(JSON.stringify(obj));
+const equivalent = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
 export default {
     name: "ToolFormNode",
@@ -44,25 +41,28 @@ export default {
         TextInput,
     },
     props: {
-        value: { required: false, default: () => {} },
+        value: { type: Object, required: true },
         config: { type: FormNode, required: true },
     },
     computed: {
-        defaultValue() {
-            const children = this.config.children.map(() => ({}));
-            const inputs = this.config.inputs.reduce((def, f) => {
-                def[f.name] = f.default || null;
-                return def;
-            }, {});
-            return { inputs, children };
+        defaultChildren() {
+            return this.config.children.map(() => ({}));
         },
+        inputs() {
+            return { ...this.config.defaults, ...this.value.inputs };
+        },
+        localValue() {
+            const inputs = { ...this.config.defaults, ...this.inputs };
+            return { inputs };
+        },
+    },
+    watch: {
         localValue: {
-            get() {
-                return this.value;
-            },
-            set(val) {
-                debugger;
-                this.$emit("input", val);
+            immediate: true,
+            handler(newVal, oldVal) {
+                if (!equivalent(newVal, oldVal)) {
+                    this.$emit("input", newVal);
+                }
             },
         },
     },
@@ -70,9 +70,10 @@ export default {
         getComponentDef() {
             return "TextInput";
         },
-        updateChild(i, val) {
-            debugger;
-            this.$set(this.localValue.children, i, val);
+        updateInputField(inputCfg, val) {
+            const newVal = clone(this.localValue);
+            newVal.inputs[inputCfg.name] = val;
+            this.$emit("input", newVal);
         },
     },
 };

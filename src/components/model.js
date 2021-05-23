@@ -1,12 +1,12 @@
 /**
- * Wrapper for a n input on the form node tree
+ * Wrapper for an input on the form node tree
  */
 
 export class FormNodeInput {
     constructor(opts = {}) {
-        const { type, name, ...props } = opts;
-        this.key = FormNodeInput.counter++;
-        Object.assign(this, { type, name, ...props });
+        const { name, type = String, defaultVal = String(), ...props } = opts;
+        Object.assign(this, { name, type, defaultVal, ...props });
+        this.key = `input_${FormNodeInput.counter++}`;
     }
 }
 
@@ -21,10 +21,17 @@ FormNodeInput.create = (props) => Object.freeze(new FormNodeInput(props));
 export class FormNode {
     constructor(opts = {}) {
         const { inputs = [], children = [], ...props } = opts;
-        this.key = FormNode.counter++;
         this.children = children;
         this.inputs = inputs;
         Object.assign(this, props);
+        this.key = `node_${FormNode.counter++}`;
+    }
+
+    get defaults() {
+        return this.inputs.reduce((def, inputCfg) => {
+            def[inputCfg.name] = inputCfg.defaultVal || null;
+            return def;
+        }, {});
     }
 
     createInput(props) {
