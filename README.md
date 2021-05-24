@@ -1,5 +1,7 @@
 # form-node
 
+Proof of concept for the tree of parameter inputs for the tool form.
+
 ## Project setup
 ```
 yarn install

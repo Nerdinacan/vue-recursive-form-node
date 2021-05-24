@@ -2,6 +2,7 @@
     <section class="node">
         <h4>{{ node.label }}</h4>
 
+        <!-- field inputs for this node -->
         <div class="fields">
             <component
                 v-for="field in node.fields"
@@ -11,6 +12,7 @@
             />
         </div>
 
+        <!-- recurse to all subsctions -->
         <ToolFormNode
             v-for="(childNode, i) in node.children"
             :key="childNode.key"
@@ -64,7 +66,9 @@ export default {
         },
     },
     methods: {
-        getComponentDef() {
+        getComponentDef(field) {
+            // use the field def to figure out what kind of input component to display
+            // just doing a dumb text input for now
             return "TextInput";
         },
     },

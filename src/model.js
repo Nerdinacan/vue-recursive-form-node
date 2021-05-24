@@ -1,5 +1,7 @@
 /**
  * Wrapper for an input on the form node tree
+ * Used to figure out default values for an individual parameter and for determining what kind of
+ * component to display on the page at its location in the tree.
  */
 
 class Field {
@@ -14,6 +16,7 @@ Field.instanceCounter = 0;
 
 /**
  * Form configuration node
+ * A collection of field definitions and a child array for subsections
  */
 
 export class FormNode {

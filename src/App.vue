@@ -1,9 +1,7 @@
 <template>
     <main id="app">
-        <div>
-            <ToolFormNode v-model="result" :node="config" />
-            <pre>{{ result }}</pre>
-        </div>
+        <ToolFormNode v-model="result" :node="config" />
+        <pre>{{ result }}</pre>
     </main>
 </template>
 
